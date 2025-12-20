@@ -4,19 +4,29 @@ import javax.swing.*;
 import java.awt.*;
 import java.util.List;
 import src.model.Coluna;
-import src.model.Tarefa;
 
 public class KanbanView extends JFrame {
 
     private JPanel painelColunas;
 
     public KanbanView() {
-        setTitle("Kanban Simples");
-        setSize(800, 400);
+        setTitle("Kanban");
+        setSize(900, 500);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setLocationRelativeTo(null);
 
         painelColunas = new JPanel();
-        painelColunas.setLayout(new GridLayout(1, 3));
+
+        painelColunas.setLayout(new FlowLayout(
+                FlowLayout.CENTER,
+                15,
+                10
+        ));
+
+        painelColunas.setBackground(new Color(230, 230, 230));
+        painelColunas.setBorder(
+                BorderFactory.createEmptyBorder(10, 10, 10, 10)
+        );
 
         add(painelColunas);
     }
@@ -28,7 +38,7 @@ public class KanbanView extends JFrame {
             painelColunas.add(new ColunaPanel(coluna));
         }
 
-        revalidate();
-        repaint();
+        painelColunas.revalidate();
+        painelColunas.repaint();
     }
 }
