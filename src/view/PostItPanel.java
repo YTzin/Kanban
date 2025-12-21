@@ -1,16 +1,16 @@
-package src.view;
+package view;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.geom.RoundRectangle2D;
-import src.model.Tarefa;
+import model.Tarefa;
 
 public class PostItPanel extends JPanel {
 
     private static final int ARC = 0; // quanto mais, mais arredondado
 
     public PostItPanel(Tarefa tarefa) {
-        setOpaque(false); // IMPORTANTE
+        setOpaque(false); 
         setLayout(new BorderLayout());
         setMaximumSize(new Dimension(220, 80));
         setPreferredSize(new Dimension(220, 80));
@@ -31,7 +31,7 @@ public class PostItPanel extends JPanel {
             RenderingHints.VALUE_ANTIALIAS_ON
         );
 
-        g2.setColor(new Color(255, 244, 180)); // cor do post-it
+        g2.setColor(new Color(0, 2, 180)); // cor do post-it
         g2.fill(new RoundRectangle2D.Float(
             0, 0,
             getWidth(),

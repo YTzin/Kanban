@@ -1,7 +1,7 @@
 import javax.swing.SwingUtilities;
-import src.model.KanbanBoard;
-import src.view.KanbanView;
-import src.controller.KanbanController;
+import model.KanbanBoard;
+import view.KanbanView;
+import controller.KanbanController;
 
 public class Main {
 

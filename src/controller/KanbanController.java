@@ -1,7 +1,7 @@
-package src.controller;
+package controller;
 
-import src.model.*;
-import src.view.KanbanView;
+import model.*;
+import view.KanbanView;
 
 public class KanbanController {
 
@@ -11,7 +11,6 @@ public class KanbanController {
     public KanbanController(KanbanBoard board, KanbanView view) {
         this.board = board;
         this.view = view;
-
         inicializar();
     }
 
@@ -21,7 +20,8 @@ public class KanbanController {
         board.adicionarColuna(new Coluna("Concluído"));
 
         board.getColunas().get(0).adicionarTarefa(new Tarefa("Estudar MVC"));
-        board.getColunas().get(0).adicionarTarefa(new Tarefa("Criar Kanban"));
+        board.getColunas().get(1).adicionarTarefa(new Tarefa("Criar Kanban"));
+        board.getColunas().get(2).adicionarTarefa(new Tarefa("Vai Corinthians"));
 
         view.atualizarColunas(board.getColunas());
         view.setVisible(true);
