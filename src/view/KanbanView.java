@@ -39,7 +39,7 @@ public class KanbanView extends JFrame {
         barra.setPreferredSize(new Dimension(900, 48));
 
         barra.add(criarBotaoBarra("Kanban", "KANBAN"));
-        barra.add(criarBotaoBarra("Outra Página", "OUTRA"));
+        barra.add(criarBotaoBarra("Outra Pagina", "OUTRA"));
 
         return barra;
     }
@@ -78,7 +78,7 @@ public class KanbanView extends JFrame {
 
     private JPanel criarPaginaOutra() {
         JPanel painel = new JPanel();
-        painel.add(new JLabel("Outra página (em construção)"));
+        painel.add(new JLabel("Outra pagina (em construcao)"));
         return painel;
     }
 
@@ -86,11 +86,25 @@ public class KanbanView extends JFrame {
     public void atualizarColunas(List<Coluna> colunas) {
         painelColunas.removeAll();
 
+        // Colunas normais
         for (Coluna coluna : colunas) {
             painelColunas.add(new ColunaPanel(coluna));
         }
 
+        // Coluna "+ Adicionar"
+        painelColunas.add(new AdicionarColunaPanel(() -> {
+            String nome = JOptionPane.showInputDialog(
+                    this,
+                    "Nome da nova coluna:"
+            );
+
+            if (nome != null && !nome.trim().isEmpty()) {
+                firePropertyChange("adicionarColuna", null, nome);
+            }
+        }));
+
         painelColunas.revalidate();
         painelColunas.repaint();
     }
+
 }
