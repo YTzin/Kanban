@@ -96,7 +96,7 @@ public class ColunaPanel extends JPanel {
             case "concluido":
                 return new Color(34, 197, 94);
             default:
-                return Color.GRAY;
+                return Color.BLACK;
         }
     }
 }
