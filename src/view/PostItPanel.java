@@ -7,7 +7,7 @@ import model.Tarefa;
 
 public class PostItPanel extends JPanel {
 
-    private static final int ARC = 0; // quanto mais, mais arredondado
+    private static final int ARC = 20; // quanto mais, mais arredondado
 
     public PostItPanel(Tarefa tarefa) {
         setOpaque(false); 
@@ -31,7 +31,7 @@ public class PostItPanel extends JPanel {
             RenderingHints.VALUE_ANTIALIAS_ON
         );
 
-        g2.setColor(new Color(0, 2, 180)); // cor do post-it
+        g2.setColor(new Color(5, 180, 180)); // cor do post-it
         g2.fill(new RoundRectangle2D.Float(
             0, 0,
             getWidth(),
