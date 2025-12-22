@@ -86,9 +86,18 @@ public class KanbanView extends JFrame {
     public void atualizarColunas(List<Coluna> colunas) {
         painelColunas.removeAll();
 
-        // Colunas normais
         for (Coluna coluna : colunas) {
-            painelColunas.add(new ColunaPanel(coluna));
+            ColunaPanel colunaPanel = new ColunaPanel(coluna);
+
+            colunaPanel.addPropertyChangeListener("adicionarPostIt", evt -> {
+                firePropertyChange(
+                        "adicionarPostIt",
+                        null,
+                        evt.getNewValue()
+                );
+            });
+
+            painelColunas.add(colunaPanel);
         }
 
         // Coluna "+ Adicionar"
@@ -106,5 +115,6 @@ public class KanbanView extends JFrame {
         painelColunas.revalidate();
         painelColunas.repaint();
     }
+
 
 }

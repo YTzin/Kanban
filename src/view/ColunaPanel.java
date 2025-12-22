@@ -38,11 +38,26 @@ public class ColunaPanel extends JPanel {
         btnAddPostIt.setFont(new Font("Segoe UI", Font.PLAIN, 12));
 
         btnAddPostIt.addActionListener(e -> {
-            JOptionPane.showMessageDialog(
+            String texto = JOptionPane.showInputDialog(
                 this,
-                "Adicionar Post-it em: " + coluna.getNome()
+                "Digite o texto do Post-it:"
             );
+
+            if (texto != null && !texto.trim().isEmpty()) {
+                Tarefa novaTarefa = new Tarefa(texto);
+
+                // Atualiza o MODEL
+                coluna.adicionarTarefa(novaTarefa);
+
+                // Atualiza a VIEW
+                conteudo.add(new PostItPanel(novaTarefa), conteudo.getComponentCount() - 1);
+                conteudo.add(Box.createVerticalStrut(8), conteudo.getComponentCount() - 1);
+
+                conteudo.revalidate();
+                conteudo.repaint();
+            }
         });
+
 
         conteudo.add(Box.createVerticalStrut(6));
         conteudo.add(btnAddPostIt);
