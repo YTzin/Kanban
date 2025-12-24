@@ -89,18 +89,35 @@ public class ColunaPanel extends JPanel {
         btnMenu.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         btnMenu.setPreferredSize(new Dimension(32, 32));
 
-        btnMenu.addActionListener(e -> {
-            JOptionPane.showMessageDialog(
-                this,
-                "Menu da coluna: " + titulo
-            );
-        });
+        // ===== MENU POPUP (VISUAL) =====
+        JPopupMenu popupMenu = new JPopupMenu();
+
+        JMenuItem itemEditar = new JMenuItem("Editar");
+        JMenuItem itemExcluir = new JMenuItem("Excluir");
+
+        // Apenas visual por enquanto
+        itemEditar.addActionListener(e ->
+            JOptionPane.showMessageDialog(this, "Editar coluna: " + titulo)
+        );
+
+        itemExcluir.addActionListener(e ->
+            JOptionPane.showMessageDialog(this, "Excluir coluna: " + titulo)
+        );
+
+        popupMenu.add(itemEditar);
+        popupMenu.addSeparator();
+        popupMenu.add(itemExcluir);
+
+        btnMenu.addActionListener(e ->
+            popupMenu.show(btnMenu, 0, btnMenu.getHeight())
+        );
 
         header.add(label, BorderLayout.WEST);
         header.add(btnMenu, BorderLayout.EAST);
 
         return header;
     }
+
 
     private Color corPorColuna(String titulo) {
         switch (titulo.toLowerCase()) {
