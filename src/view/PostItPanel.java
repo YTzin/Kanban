@@ -9,17 +9,55 @@ public class PostItPanel extends JPanel {
 
     private static final int ARC = 20; // quanto mais, mais arredondado
 
+    private Tarefa tarefa;
+
     public PostItPanel(Tarefa tarefa) {
+        this.tarefa = tarefa;
+
         setOpaque(false); 
         setLayout(new BorderLayout());
-        setMaximumSize(new Dimension(220, 80));
-        setPreferredSize(new Dimension(220, 80));
+        setMaximumSize(new Dimension(220, 100));
+        setPreferredSize(new Dimension(220, 100));
 
+        // Título centralizado
         JLabel titulo = new JLabel(tarefa.getTitulo(), SwingConstants.CENTER);
         titulo.setBorder(BorderFactory.createEmptyBorder(10, 12, 10, 12));
         titulo.setFont(new Font("Segoe UI", Font.PLAIN, 13));
-
         add(titulo, BorderLayout.CENTER);
+
+        // Botão "Detalhes"
+        JButton detalhesButton = new JButton("Detalhes");
+        detalhesButton.setFont(new Font("Segoe UI", Font.PLAIN, 12));
+        detalhesButton.setFocusPainted(false);
+        detalhesButton.addActionListener(e -> mostrarDetalhes());
+        add(detalhesButton, BorderLayout.SOUTH);
+    }
+
+    // Método para mostrar o dialog com as informações da tarefa
+    private void mostrarDetalhes() {
+        JDialog dialog = new JDialog((JFrame) SwingUtilities.getWindowAncestor(this), "Detalhes da Tarefa", true);
+        dialog.setLayout(new BorderLayout());
+
+        JPanel infoPanel = new JPanel(new GridLayout(0, 1, 5, 5));
+        infoPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+
+        infoPanel.add(new JLabel("Titulo: " + tarefa.getTitulo()));
+        infoPanel.add(new JLabel("Descricao: " + tarefa.getDescricao()));
+        infoPanel.add(new JLabel("Prioridade: " + tarefa.getPrioridade()));
+        infoPanel.add(new JLabel("Data de Criacao: " + tarefa.getDataCriacao()));
+        // Se houver outros campos na Tarefa, adicione aqui
+
+        dialog.add(infoPanel, BorderLayout.CENTER);
+
+        JButton fechar = new JButton("Fechar");
+        fechar.addActionListener(ev -> dialog.dispose());
+        JPanel buttonPanel = new JPanel();
+        buttonPanel.add(fechar);
+        dialog.add(buttonPanel, BorderLayout.SOUTH);
+
+        dialog.pack();
+        dialog.setLocationRelativeTo(this);
+        dialog.setVisible(true);
     }
 
     @Override

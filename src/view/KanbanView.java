@@ -82,39 +82,45 @@ public class KanbanView extends JFrame {
         return painel;
     }
 
-    // ===== ATUALIZAÇÃO DAS COLUNAS =====
+    // Atualiza todas as colunas e adiciona o botão "Adicionar Post-It"
     public void atualizarColunas(List<Coluna> colunas) {
         painelColunas.removeAll();
 
-        for (Coluna coluna : colunas) {
-            ColunaPanel colunaPanel = new ColunaPanel(coluna);
+        for (int i = 0; i < colunas.size(); i++) {
+            Coluna coluna = colunas.get(i);
 
-            colunaPanel.addPropertyChangeListener("adicionarPostIt", evt -> {
-                firePropertyChange(
-                        "adicionarPostIt",
-                        null,
-                        evt.getNewValue()
-                );
+            JPanel colunaPanel = new JPanel();
+            colunaPanel.setLayout(new BoxLayout(colunaPanel, BoxLayout.Y_AXIS));
+            colunaPanel.setBorder(BorderFactory.createTitledBorder(coluna.getNome()));
+
+            // Adiciona todos os PostIts da coluna
+            coluna.getTarefas().forEach(tarefa -> colunaPanel.add(new PostItPanel(tarefa)));
+
+            // Botão "Adicionar Post-It" que dispara evento para o controller
+            int colunaIndex = i; // precisa ser final ou effectively final para o listener
+            JButton addPostItButton = new JButton("+ Adicionar Post-It");
+            addPostItButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+            addPostItButton.addActionListener(e -> {
+                firePropertyChange("adicionarPostIt", null, colunaIndex);
             });
+
+            colunaPanel.add(Box.createVerticalStrut(10));
+            colunaPanel.add(addPostItButton);
 
             painelColunas.add(colunaPanel);
         }
 
-        // Coluna "+ Adicionar"
+        // Coluna "+ Adicionar Coluna"
         painelColunas.add(new AdicionarColunaPanel(() -> {
             String nome = JOptionPane.showInputDialog(
-                    this,
-                    "Nome da nova coluna:"
+                this,
+                "Nome da nova coluna:"
             );
-
-            if (nome != null && !nome.trim().isEmpty()) {
-                firePropertyChange("adicionarColuna", null, nome);
-            }
+            firePropertyChange("adicionarColuna", null, nome);
         }));
 
         painelColunas.revalidate();
         painelColunas.repaint();
     }
-
 
 }
