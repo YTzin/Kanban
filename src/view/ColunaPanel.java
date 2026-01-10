@@ -9,26 +9,50 @@ public class ColunaPanel extends JPanel {
 
     public ColunaPanel(Coluna coluna) {
         setLayout(new BorderLayout());
-        setBackground(new Color(240, 240, 240));
+        setPreferredSize(new Dimension(260, 400));
+        setBackground(new Color(245, 245, 245));
 
-        // HEADER (Título + ...)
-        JPanel header = criarHeader(coluna.getNome());
-        add(header, BorderLayout.NORTH);
+        // ===== WRAPPER PARA HEADER + SCROLL =====
+        JPanel wrapper = new JPanel();
+        wrapper.setLayout(new BorderLayout());
 
-        // CONTEÚDO (Post-its + botão)
+        // ===== HEADER colorido =====
+        JPanel header = new JPanel();
+        header.setBackground(corPorColuna(coluna.getNome()));
+        header.setOpaque(true);
+        header.setPreferredSize(new Dimension(260, 42));
+        header.setLayout(new FlowLayout(FlowLayout.LEFT, 12, 8));
+
+        JLabel label = new JLabel(coluna.getNome().toUpperCase());
+        label.setForeground(Color.WHITE);
+        label.setFont(new Font("Segoe UI", Font.BOLD, 14));
+        header.add(label);
+
+        wrapper.add(header, BorderLayout.NORTH);
+
+        // ===== CONTEÚDO (Post-Its) =====
         JPanel conteudo = new JPanel();
         conteudo.setLayout(new BoxLayout(conteudo, BoxLayout.Y_AXIS));
-        conteudo.setBackground(new Color(245, 245, 245));
         conteudo.setBorder(BorderFactory.createEmptyBorder(8, 8, 8, 8));
+        conteudo.setBackground(new Color(245, 245, 245));
 
-        // POST-ITS
         for (Tarefa tarefa : coluna.getTarefas()) {
             conteudo.add(new PostItPanel(tarefa));
             conteudo.add(Box.createVerticalStrut(8));
         }
 
-        // BOTÃO DE ADICIONAR POST-IT
-        JButton btnAddPostIt = new JButton("+ Adicionar Post-it");
+        JScrollPane scroll = new JScrollPane(conteudo);
+        scroll.setBorder(null);
+        scroll.getVerticalScrollBar().setUnitIncrement(16);
+        scroll.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+
+        wrapper.add(scroll, BorderLayout.CENTER);
+
+        // Adiciona o wrapper ao ColunaPanel
+        add(wrapper, BorderLayout.CENTER);
+
+        // ===== BOTÃO +ADICIONAR POST-IT =====
+        JButton btnAddPostIt = new JButton("+ Adicionar Post-It");
         btnAddPostIt.setAlignmentX(Component.CENTER_ALIGNMENT);
         btnAddPostIt.setMaximumSize(new Dimension(Integer.MAX_VALUE, 32));
         btnAddPostIt.setFocusPainted(false);
@@ -38,97 +62,32 @@ public class ColunaPanel extends JPanel {
         btnAddPostIt.setFont(new Font("Segoe UI", Font.PLAIN, 12));
 
         btnAddPostIt.addActionListener(e -> {
-            String texto = JOptionPane.showInputDialog(
-                this,
-                "Digite o texto do Post-it:"
-            );
-
+            String texto = JOptionPane.showInputDialog(this, "Digite o texto do Post-it:");
             if (texto != null && !texto.trim().isEmpty()) {
                 Tarefa novaTarefa = new Tarefa(texto);
-
-                // Atualiza o MODEL
                 coluna.adicionarTarefa(novaTarefa);
 
-                // Atualiza a VIEW
-                conteudo.add(new PostItPanel(novaTarefa), conteudo.getComponentCount() - 1);
-                conteudo.add(Box.createVerticalStrut(8), conteudo.getComponentCount() - 1);
-
+                conteudo.add(new PostItPanel(novaTarefa));
+                conteudo.add(Box.createVerticalStrut(8));
                 conteudo.revalidate();
                 conteudo.repaint();
             }
         });
 
-
-        conteudo.add(Box.createVerticalStrut(6));
-        conteudo.add(btnAddPostIt);
-
-        JScrollPane scroll = new JScrollPane(conteudo);
-        scroll.setBorder(null);
-        scroll.getVerticalScrollBar().setUnitIncrement(16);
-
-        add(scroll, BorderLayout.CENTER);
+        add(btnAddPostIt, BorderLayout.SOUTH);
     }
 
-    private JPanel criarHeader(String titulo) {
-        JPanel header = new JPanel(new BorderLayout());
-        header.setPreferredSize(new Dimension(260, 42));
-        header.setBackground(corPorColuna(titulo));
-        header.setOpaque(true);
-
-        JLabel label = new JLabel(titulo.toUpperCase());
-        label.setForeground(Color.WHITE);
-        label.setFont(new Font("Segoe UI", Font.BOLD, 14));
-        label.setBorder(BorderFactory.createEmptyBorder(0, 12, 0, 0));
-
-        JButton btnMenu = new JButton("⋮");
-        btnMenu.setFocusPainted(false);
-        btnMenu.setBorderPainted(false);
-        btnMenu.setContentAreaFilled(false);
-        btnMenu.setForeground(Color.WHITE);
-        btnMenu.setFont(new Font("Segoe UI", Font.BOLD, 18));
-        btnMenu.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-        btnMenu.setPreferredSize(new Dimension(32, 32));
-
-        // ===== MENU POPUP (VISUAL) =====
-        JPopupMenu popupMenu = new JPopupMenu();
-
-        JMenuItem itemEditar = new JMenuItem("Editar");
-        JMenuItem itemExcluir = new JMenuItem("Excluir");
-
-        // Apenas visual por enquanto
-        itemEditar.addActionListener(e ->
-            JOptionPane.showMessageDialog(this, "Editar coluna: " + titulo)
-        );
-
-        itemExcluir.addActionListener(e ->
-            JOptionPane.showMessageDialog(this, "Excluir coluna: " + titulo)
-        );
-
-        popupMenu.add(itemEditar);
-        popupMenu.addSeparator();
-        popupMenu.add(itemExcluir);
-
-        btnMenu.addActionListener(e ->
-            popupMenu.show(btnMenu, 0, btnMenu.getHeight())
-        );
-
-        header.add(label, BorderLayout.WEST);
-        header.add(btnMenu, BorderLayout.EAST);
-
-        return header;
-    }
-
-
+    // ===== Cores por coluna =====
     private Color corPorColuna(String titulo) {
         switch (titulo.toLowerCase()) {
             case "a fazer":
-                return new Color(59, 130, 246);
+                return new Color(59, 130, 246); // azul
             case "em progresso":
-                return new Color(245, 158, 11);
+                return new Color(245, 158, 11); // laranja
             case "concluido":
-                return new Color(34, 197, 94);
+                return new Color(34, 197, 94); // verde
             default:
-                return Color.BLACK;
+                return Color.DARK_GRAY;
         }
     }
 }
