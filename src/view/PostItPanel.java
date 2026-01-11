@@ -33,7 +33,7 @@ public class PostItPanel extends JPanel {
         add(detalhesButton, BorderLayout.SOUTH);
     }
 
-    // Método para mostrar o dialog com as informações da tarefa
+    // DIALOG DO BOTÃO "DETALHES"
     private void mostrarDetalhes() {
         JDialog dialog = new JDialog((JFrame) SwingUtilities.getWindowAncestor(this), "Detalhes da Tarefa", true);
         dialog.setLayout(new BorderLayout());
@@ -45,14 +45,22 @@ public class PostItPanel extends JPanel {
         infoPanel.add(new JLabel("Descricao: " + tarefa.getDescricao()));
         infoPanel.add(new JLabel("Prioridade: " + tarefa.getPrioridade()));
         infoPanel.add(new JLabel("Data de Criacao: " + tarefa.getDataCriacao()));
-        // Se houver outros campos na Tarefa, adicione aqui
 
         dialog.add(infoPanel, BorderLayout.CENTER);
 
+        JPanel buttonPanel = new JPanel();
+
         JButton fechar = new JButton("Fechar");
         fechar.addActionListener(ev -> dialog.dispose());
-        JPanel buttonPanel = new JPanel();
         buttonPanel.add(fechar);
+
+        JButton proximo = new JButton("Mandar para o proximo");
+        proximo.addActionListener(ev -> {
+            firePropertyChange("moverTarefaProximo", null, tarefa);
+            dialog.dispose(); 
+        });
+        buttonPanel.add(proximo);
+
         dialog.add(buttonPanel, BorderLayout.SOUTH);
 
         dialog.pack();

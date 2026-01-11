@@ -82,40 +82,94 @@ public class KanbanView extends JFrame {
         return painel;
     }
 
-    // Atualiza todas as colunas e adiciona o botão "Adicionar Post-It"
+    // ===== Atualiza as colunas =====
     public void atualizarColunas(List<Coluna> colunas) {
         painelColunas.removeAll();
 
         for (int i = 0; i < colunas.size(); i++) {
             Coluna coluna = colunas.get(i);
+            int colunaIndex = i;
 
-            JPanel colunaPanel = new JPanel();
-            colunaPanel.setLayout(new BoxLayout(colunaPanel, BoxLayout.Y_AXIS));
-            colunaPanel.setBorder(BorderFactory.createTitledBorder(coluna.getNome()));
+            JPanel colunaPanel = new JPanel(new BorderLayout());
+            colunaPanel.setPreferredSize(new Dimension(260, 400));
+            colunaPanel.setBackground(Color.WHITE);
 
-            // Adiciona todos os PostIts da coluna
-            coluna.getTarefas().forEach(tarefa -> colunaPanel.add(new PostItPanel(tarefa)));
+            // ===== HEADER =====
+            JPanel header = new JPanel(new BorderLayout());
+            header.setPreferredSize(new Dimension(260, 40));
+            header.setBackground(corPorColuna(coluna.getNome()));
+            header.setOpaque(true);
 
-            // Botão "Adicionar Post-It" que dispara evento para o controller
-            int colunaIndex = i; // precisa ser final ou effectively final para o listener
+            JLabel titulo = new JLabel(coluna.getNome().toUpperCase());
+            titulo.setForeground(Color.WHITE);
+            titulo.setFont(new Font("Segoe UI", Font.BOLD, 14));
+            titulo.setBorder(BorderFactory.createEmptyBorder(0, 10, 0, 0));
+
+            JButton btnMenu = new JButton("...");
+            btnMenu.setForeground(Color.WHITE);
+            btnMenu.setFont(new Font("Segoe UI", Font.BOLD, 16));
+            btnMenu.setBorderPainted(false);
+            btnMenu.setContentAreaFilled(false);
+            btnMenu.setFocusPainted(false);
+            btnMenu.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+
+            JPopupMenu menu = new JPopupMenu();
+            JMenuItem editar = new JMenuItem("Editar");
+            JMenuItem excluir = new JMenuItem("Excluir");
+
+            menu.add(editar);
+            menu.add(excluir);
+
+            btnMenu.addActionListener(e ->
+                menu.show(btnMenu, 0, btnMenu.getHeight())
+            );
+
+            editar.addActionListener(e ->
+                firePropertyChange("editarColuna", null, colunaIndex)
+            );
+
+            excluir.addActionListener(e ->
+                firePropertyChange("excluirColuna", null, colunaIndex)
+            );
+
+            header.add(titulo, BorderLayout.WEST);
+            header.add(btnMenu, BorderLayout.EAST);
+
+            colunaPanel.add(header, BorderLayout.NORTH);
+
+            // ===== CONTEÚDO =====
+            JPanel conteudo = new JPanel();
+            conteudo.setLayout(new BoxLayout(conteudo, BoxLayout.Y_AXIS));
+            conteudo.setBackground(new Color(245, 245, 245));
+            conteudo.setBorder(BorderFactory.createEmptyBorder(8, 8, 8, 8));
+
+            coluna.getTarefas().forEach(tarefa ->
+                conteudo.add(new PostItPanel(tarefa))
+            );
+
+            JScrollPane scroll = new JScrollPane(conteudo);
+            scroll.setBorder(null);
+
+            colunaPanel.add(scroll, BorderLayout.CENTER);
+
+            // ===== BOTÃO ADD POST-IT =====
             JButton addPostItButton = new JButton("+ Adicionar Post-It");
-            addPostItButton.setAlignmentX(Component.CENTER_ALIGNMENT);
-            addPostItButton.addActionListener(e -> {
-                firePropertyChange("adicionarPostIt", null, colunaIndex);
-            });
+            addPostItButton.addActionListener(e ->
+                firePropertyChange("adicionarPostIt", null, colunaIndex)
+            );
 
-            colunaPanel.add(Box.createVerticalStrut(10));
-            colunaPanel.add(addPostItButton);
+            colunaPanel.add(addPostItButton, BorderLayout.SOUTH);
 
             painelColunas.add(colunaPanel);
         }
 
-        // Coluna "+ Adicionar Coluna"
+        // ===== Botão adicionar coluna =====
         painelColunas.add(new AdicionarColunaPanel(() -> {
             String nome = JOptionPane.showInputDialog(
-                this,
-                "Nome da nova coluna:"
+                    this,
+                    "Nome da nova coluna:"
             );
+
             firePropertyChange("adicionarColuna", null, nome);
         }));
 
@@ -123,4 +177,20 @@ public class KanbanView extends JFrame {
         painelColunas.repaint();
     }
 
+    // ===== Cores por coluna =====
+    private Color corPorColuna(String nome) {
+        if (nome == null) return Color.DARK_GRAY;
+
+        switch (nome.trim().toLowerCase()) {
+            case "a fazer":
+                return new Color(59, 130, 246);   // azul
+            case "em progresso":
+                return new Color(245, 158, 11);   // laranja
+            case "concluído":
+            case "concluido":
+                return new Color(34, 197, 94);    // verde
+            default:
+                return new Color(107, 114, 128);  // cinza
+        }
+    }
 }

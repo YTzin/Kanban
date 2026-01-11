@@ -7,34 +7,26 @@ import model.Tarefa;
 
 public class ColunaPanel extends JPanel {
 
+    private JPanel conteudo;
+
     public ColunaPanel(Coluna coluna) {
         setLayout(new BorderLayout());
         setPreferredSize(new Dimension(260, 400));
-        setBackground(new Color(245, 245, 245));
+        setMaximumSize(new Dimension(260, Integer.MAX_VALUE));
+        setBackground(new Color(240, 0, 0));
+        setOpaque(true);
+        
 
-        // ===== WRAPPER PARA HEADER + SCROLL =====
-        JPanel wrapper = new JPanel();
-        wrapper.setLayout(new BorderLayout());
+        // ===== HEADER =====
+        JPanel header = criarHeader(coluna.getNome());
+        add(header, BorderLayout.NORTH);
 
-        // ===== HEADER colorido =====
-        JPanel header = new JPanel();
-        header.setBackground(corPorColuna(coluna.getNome()));
-        header.setOpaque(true);
-        header.setPreferredSize(new Dimension(260, 42));
-        header.setLayout(new FlowLayout(FlowLayout.LEFT, 12, 8));
-
-        JLabel label = new JLabel(coluna.getNome().toUpperCase());
-        label.setForeground(Color.WHITE);
-        label.setFont(new Font("Segoe UI", Font.BOLD, 14));
-        header.add(label);
-
-        wrapper.add(header, BorderLayout.NORTH);
-
-        // ===== CONTEÚDO (Post-Its) =====
-        JPanel conteudo = new JPanel();
+        // ===== CONTEÚDO =====
+        conteudo = new JPanel();
         conteudo.setLayout(new BoxLayout(conteudo, BoxLayout.Y_AXIS));
-        conteudo.setBorder(BorderFactory.createEmptyBorder(8, 8, 8, 8));
         conteudo.setBackground(new Color(245, 245, 245));
+        conteudo.setOpaque(true);
+        conteudo.setBorder(BorderFactory.createEmptyBorder(8, 8, 8, 8));
 
         for (Tarefa tarefa : coluna.getTarefas()) {
             conteudo.add(new PostItPanel(tarefa));
@@ -44,29 +36,24 @@ public class ColunaPanel extends JPanel {
         JScrollPane scroll = new JScrollPane(conteudo);
         scroll.setBorder(null);
         scroll.getVerticalScrollBar().setUnitIncrement(16);
-        scroll.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+        scroll.setOpaque(false);
+        scroll.getViewport().setOpaque(false);
+        add(scroll, BorderLayout.CENTER);
 
-        wrapper.add(scroll, BorderLayout.CENTER);
-
-        // Adiciona o wrapper ao ColunaPanel
-        add(wrapper, BorderLayout.CENTER);
-
-        // ===== BOTÃO +ADICIONAR POST-IT =====
-        JButton btnAddPostIt = new JButton("+ Adicionar Post-It");
-        btnAddPostIt.setAlignmentX(Component.CENTER_ALIGNMENT);
-        btnAddPostIt.setMaximumSize(new Dimension(Integer.MAX_VALUE, 32));
+        // ===== BOTÃO =====
+        JButton btnAddPostIt = new JButton("+ Adicionar Post-it");
         btnAddPostIt.setFocusPainted(false);
         btnAddPostIt.setBackground(Color.WHITE);
         btnAddPostIt.setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY));
-        btnAddPostIt.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         btnAddPostIt.setFont(new Font("Segoe UI", Font.PLAIN, 12));
+        btnAddPostIt.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        btnAddPostIt.setPreferredSize(new Dimension(260, 32));
 
         btnAddPostIt.addActionListener(e -> {
             String texto = JOptionPane.showInputDialog(this, "Digite o texto do Post-it:");
             if (texto != null && !texto.trim().isEmpty()) {
                 Tarefa novaTarefa = new Tarefa(texto);
                 coluna.adicionarTarefa(novaTarefa);
-
                 conteudo.add(new PostItPanel(novaTarefa));
                 conteudo.add(Box.createVerticalStrut(8));
                 conteudo.revalidate();
@@ -77,15 +64,36 @@ public class ColunaPanel extends JPanel {
         add(btnAddPostIt, BorderLayout.SOUTH);
     }
 
-    // ===== Cores por coluna =====
+    // ===== HEADER =====
+    private JPanel criarHeader(String titulo) {
+        JPanel header = new JPanel(new BorderLayout());
+        header.setOpaque(true);
+        header.setBackground(corPorColuna(titulo));
+        header.setMinimumSize(new Dimension(260, 42));
+        header.setMaximumSize(new Dimension(Integer.MAX_VALUE, 42));
+        header.setPreferredSize(new Dimension(260, 42));
+
+        JLabel label = new JLabel(titulo.toUpperCase());
+        label.setForeground(Color.WHITE);
+        label.setFont(new Font("Segoe UI", Font.BOLD, 14));
+        label.setBorder(BorderFactory.createEmptyBorder(0, 12, 0, 0));
+        header.add(label, BorderLayout.WEST);
+
+        return header;
+    }
+
     private Color corPorColuna(String titulo) {
-        switch (titulo.toLowerCase()) {
+        String t = titulo.toLowerCase().trim()
+                .replace("í", "i")
+                .replace("ú", "u");
+
+        switch (t) {
             case "a fazer":
-                return new Color(59, 130, 246); // azul
+                return new Color(59, 130, 246);   // azul
             case "em progresso":
-                return new Color(245, 158, 11); // laranja
+                return new Color(245, 158, 11);   // laranja
             case "concluido":
-                return new Color(34, 197, 94); // verde
+                return new Color(34, 197, 94);    // verde
             default:
                 return Color.DARK_GRAY;
         }

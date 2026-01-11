@@ -20,9 +20,29 @@ public class KanbanController {
         // Listener para adicionar nova coluna
         view.addPropertyChangeListener("adicionarColuna", evt -> {
             String nome = (String) evt.getNewValue();
+
+            // CANCELAR ou X, acho q resolvi não estava verificando NULL
+            if (nome == null) {
+                return;
+            }
+
+            nome = nome.trim();
+
+            // Nome vazio
+            if (nome.isEmpty()) {
+                JOptionPane.showMessageDialog(
+                        view,
+                        "O nome da coluna eh obrigatorio!",
+                        "Erro",
+                        JOptionPane.ERROR_MESSAGE
+                );
+                return;
+            }
+
             board.adicionarColuna(new Coluna(nome));
             view.atualizarColunas(board.getColunas());
         });
+
 
         // Listener para adicionar post-it (nova tarefa)
         view.addPropertyChangeListener("adicionarPostIt", evt -> {
@@ -42,40 +62,59 @@ public class KanbanController {
         view.setVisible(true);
     }
 
-    // Método que abre o formulário para criar a tarefa
-    private void criarNovaTarefa(int colunaIndex) {
-        JPanel panel = new JPanel(new GridLayout(0, 1, 5, 5));
+private void criarNovaTarefa(int colunaIndex) {
 
-        JTextField tituloField = new JTextField();
-        JTextField descricaoField = new JTextField();
-        String[] prioridades = {"Alta", "Media", "Baixa"};
-        JComboBox<String> prioridadeBox = new JComboBox<>(prioridades);
+    JPanel panel = new JPanel(new GridLayout(0, 1, 6, 6));
 
-        panel.add(new JLabel("Titulo:"));
-        panel.add(tituloField);
-        panel.add(new JLabel("Descricao:"));
-        panel.add(descricaoField);
-        panel.add(new JLabel("Prioridade:"));
-        panel.add(prioridadeBox);
+    JTextField tituloField = new JTextField();
+    JTextField descricaoField = new JTextField();
 
-        int resultado = JOptionPane.showConfirmDialog(
-                null, panel, "Nova Tarefa", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE
-        );
+    String[] prioridades = {"Alta", "Media", "Baixa"};
+    JComboBox<String> prioridadeBox = new JComboBox<>(prioridades);
 
-        if (resultado == JOptionPane.OK_OPTION) {
-            String titulo = tituloField.getText().trim();
-            String descricao = descricaoField.getText().trim();
-            String prioridade = (String) prioridadeBox.getSelectedItem();
+    panel.add(new JLabel("Titulo:"));
+    panel.add(tituloField);
 
-            if (!titulo.isEmpty()) {
-                Tarefa novaTarefa = new Tarefa(titulo, descricao, prioridade);
-                board.getColunas().get(colunaIndex).adicionarTarefa(novaTarefa);
+    panel.add(new JLabel("Descricao:"));
+    panel.add(descricaoField);
 
-                // Manda lá pra view atualizar
-                view.atualizarColunas(board.getColunas());
-            } else {
-                JOptionPane.showMessageDialog(null, "O título eh obrigatorio!", "Erro", JOptionPane.ERROR_MESSAGE);
-            }
-        }
+    panel.add(new JLabel("Prioridade:"));
+    panel.add(prioridadeBox);
+
+    int resultado = JOptionPane.showConfirmDialog(
+            view,
+            panel,
+            "Nova Tarefa",
+            JOptionPane.OK_CANCEL_OPTION,
+            JOptionPane.PLAIN_MESSAGE
+    );
+
+    // Se clicar em Cancelar ou no X, não faz nada
+    if (resultado != JOptionPane.OK_OPTION) {
+        return;
     }
+
+    String titulo = tituloField.getText().trim();
+    String descricao = descricaoField.getText().trim();
+    String prioridade = (String) prioridadeBox.getSelectedItem();
+
+    // Validação
+    if (titulo.isEmpty()) {
+        JOptionPane.showMessageDialog(
+                view,
+                "O título eh obrigatorio!",
+                "Erro",
+                JOptionPane.ERROR_MESSAGE
+        );
+        return;
+    }
+
+    // Cria a tarefa e adiciona no model
+    Tarefa novaTarefa = new Tarefa(titulo, descricao, prioridade);
+    board.getColunas().get(colunaIndex).adicionarTarefa(novaTarefa);
+
+    // Atualiza a view
+    view.atualizarColunas(board.getColunas());
+}
+
 }
