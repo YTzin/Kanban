@@ -17,4 +17,9 @@ public class KanbanBoard {
     public List<Coluna> getColunas() {
         return colunas;
     }
+    public void removerColuna(int index) {
+    if (index >= 0 && index < colunas.size()) {
+        colunas.remove(index);
+    }
+}
 }

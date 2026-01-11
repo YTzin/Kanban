@@ -18,7 +18,6 @@ public class KanbanView extends JFrame {
         setLocationRelativeTo(null);
         setLayout(new BorderLayout());
 
-        // Barra superior
         add(criarBarraNavegacao(), BorderLayout.NORTH);
 
         cardLayout = new CardLayout();
@@ -32,14 +31,13 @@ public class KanbanView extends JFrame {
         cardLayout.show(painelCards, "KANBAN");
     }
 
-    // ===== Barra de navegação =====
     private JPanel criarBarraNavegacao() {
         JPanel barra = new JPanel(new FlowLayout(FlowLayout.LEFT, 15, 10));
         barra.setBackground(new Color(2, 106, 167));
         barra.setPreferredSize(new Dimension(900, 48));
 
         barra.add(criarBotaoBarra("Kanban", "KANBAN"));
-        barra.add(criarBotaoBarra("Outra Pagina", "OUTRA"));
+        barra.add(criarBotaoBarra("Nova pagina", "OUTRA"));
 
         return barra;
     }
@@ -55,7 +53,7 @@ public class KanbanView extends JFrame {
         botao.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 
         botao.addActionListener(e ->
-            cardLayout.show(painelCards, card)
+                cardLayout.show(painelCards, card)
         );
 
         return botao;
@@ -82,7 +80,6 @@ public class KanbanView extends JFrame {
         return painel;
     }
 
-    // ===== Atualiza as colunas =====
     public void atualizarColunas(List<Coluna> colunas) {
         painelColunas.removeAll();
 
@@ -94,10 +91,9 @@ public class KanbanView extends JFrame {
             colunaPanel.setPreferredSize(new Dimension(260, 400));
             colunaPanel.setBackground(Color.WHITE);
 
-            // ===== HEADER =====
             JPanel header = new JPanel(new BorderLayout());
             header.setPreferredSize(new Dimension(260, 40));
-            header.setBackground(corPorColuna(coluna.getNome()));
+            header.setBackground(coluna.getCor());
             header.setOpaque(true);
 
             JLabel titulo = new JLabel(coluna.getNome().toUpperCase());
@@ -116,81 +112,92 @@ public class KanbanView extends JFrame {
             JPopupMenu menu = new JPopupMenu();
             JMenuItem editar = new JMenuItem("Editar");
             JMenuItem excluir = new JMenuItem("Excluir");
-
             menu.add(editar);
             menu.add(excluir);
 
             btnMenu.addActionListener(e ->
-                menu.show(btnMenu, 0, btnMenu.getHeight())
+                    menu.show(btnMenu, 0, btnMenu.getHeight())
             );
 
             editar.addActionListener(e ->
-                firePropertyChange("editarColuna", null, colunaIndex)
+                    firePropertyChange("editarColuna", null, colunaIndex)
             );
 
             excluir.addActionListener(e ->
-                firePropertyChange("excluirColuna", null, colunaIndex)
+                    firePropertyChange("excluirColuna", null, colunaIndex)
             );
 
             header.add(titulo, BorderLayout.WEST);
             header.add(btnMenu, BorderLayout.EAST);
-
             colunaPanel.add(header, BorderLayout.NORTH);
 
-            // ===== CONTEÚDO =====
             JPanel conteudo = new JPanel();
             conteudo.setLayout(new BoxLayout(conteudo, BoxLayout.Y_AXIS));
             conteudo.setBackground(new Color(245, 245, 245));
             conteudo.setBorder(BorderFactory.createEmptyBorder(8, 8, 8, 8));
 
             coluna.getTarefas().forEach(tarefa ->
-                conteudo.add(new PostItPanel(tarefa))
+                    conteudo.add(new PostItPanel(tarefa))
             );
 
             JScrollPane scroll = new JScrollPane(conteudo);
             scroll.setBorder(null);
-
             colunaPanel.add(scroll, BorderLayout.CENTER);
 
-            // ===== BOTÃO ADD POST-IT =====
             JButton addPostItButton = new JButton("+ Adicionar Post-It");
             addPostItButton.addActionListener(e ->
-                firePropertyChange("adicionarPostIt", null, colunaIndex)
+                    firePropertyChange("adicionarPostIt", null, colunaIndex)
             );
-
             colunaPanel.add(addPostItButton, BorderLayout.SOUTH);
 
             painelColunas.add(colunaPanel);
         }
 
-        // ===== Botão adicionar coluna =====
         painelColunas.add(new AdicionarColunaPanel(() -> {
-            String nome = JOptionPane.showInputDialog(
+
+            JTextField nomeField = new JTextField();
+            JButton btnCor = new JButton("Escolher cor");
+
+            final Color[] corSelecionada = { Color.GRAY };
+
+            btnCor.addActionListener(e -> {
+                Color cor = JColorChooser.showDialog(
+                        this,
+                        "Escolha a cor da coluna",
+                        corSelecionada[0]
+                );
+                if (cor != null) {
+                    corSelecionada[0] = cor;
+                }
+            });
+
+            JPanel panel = new JPanel(new GridLayout(0, 1, 6, 6));
+            panel.add(new JLabel("Nome da coluna:"));
+            panel.add(nomeField);
+            panel.add(btnCor);
+
+            int result = JOptionPane.showConfirmDialog(
                     this,
-                    "Nome da nova coluna:"
+                    panel,
+                    "Nova Coluna",
+                    JOptionPane.OK_CANCEL_OPTION,
+                    JOptionPane.PLAIN_MESSAGE
             );
 
-            firePropertyChange("adicionarColuna", null, nome);
+            if (result != JOptionPane.OK_OPTION) {
+                return;
+            }
+
+            firePropertyChange(
+                    "adicionarColuna",
+                    null,
+                    new Object[]{ nomeField.getText(), corSelecionada[0] }
+            );
         }));
 
         painelColunas.revalidate();
         painelColunas.repaint();
     }
 
-    // ===== Cores por coluna =====
-    private Color corPorColuna(String nome) {
-        if (nome == null) return Color.DARK_GRAY;
-
-        switch (nome.trim().toLowerCase()) {
-            case "a fazer":
-                return new Color(59, 130, 246);   // azul
-            case "em progresso":
-                return new Color(245, 158, 11);   // laranja
-            case "concluído":
-            case "concluido":
-                return new Color(34, 197, 94);    // verde
-            default:
-                return new Color(107, 114, 128);  // cinza
-        }
-    }
+    //Removi cores por coluna e coloquei na model, pq guardar valores padrão é tarefa da MODEL, dps pesquisar se realmente é assim q o MVC trabalha ou se eu voltou pra VIEW.
 }
