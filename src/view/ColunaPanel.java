@@ -37,7 +37,7 @@ public class ColunaPanel extends JPanel {
         scroll.setBorder(null);
         scroll.getVerticalScrollBar().setUnitIncrement(16);
         scroll.setOpaque(false);
-        scroll.getViewport().setOpaque(false);
+        scroll.getViewport().setOpaque(true);
         add(scroll, BorderLayout.CENTER);
 
         // ===== BOTÃO =====

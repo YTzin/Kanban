@@ -16,8 +16,32 @@ public class KanbanController {
     public KanbanController(KanbanBoard board, KanbanView view) {
         this.board = board;
         this.view = view;
+        // Excluir o POST-IT
+        view.addPropertyChangeListener("excluirTarefa", evt -> {
 
-        // Listener para adicionar nova coluna
+            Tarefa tarefa = (Tarefa) evt.getNewValue();
+
+            int opcao = JOptionPane.showConfirmDialog(
+                    view,
+                    "Deseja excluir este post-it?",
+                    "Confirmar exclusão",
+                    JOptionPane.YES_NO_OPTION
+            );
+
+            if (opcao != JOptionPane.YES_OPTION) {
+                return;
+            }
+
+            for (Coluna coluna : board.getColunas()) {
+                if (coluna.getTarefas().remove(tarefa)) {
+                    break;
+                }
+            }
+
+            view.atualizarColunas(board.getColunas());
+        });
+
+        // Adicionar coluna
         view.addPropertyChangeListener("adicionarColuna", evt -> {
             Object[] dados = (Object[]) evt.getNewValue();
             String nome = (String) dados[0];
@@ -29,8 +53,6 @@ public class KanbanController {
             }
 
             nome = nome.trim();
-
-            // Nome vazio
             if (nome.isEmpty()) {
                 JOptionPane.showMessageDialog(
                         view,
@@ -66,9 +88,9 @@ public class KanbanController {
             editarColuna(colunaIndex);
         });
 
-        // Listener para adicionar post-it (nova tarefa)
+        // Add post-it, tem que resolver o problema de estar add em todas as colunas
         view.addPropertyChangeListener("adicionarPostIt", evt -> {
-            int colunaIndex = (int) evt.getNewValue(); // qual coluna clicou
+            int colunaIndex = (int) evt.getNewValue(); 
             criarNovaTarefa(colunaIndex);
         });
 
@@ -176,7 +198,6 @@ public class KanbanController {
         String descricao = descricaoField.getText().trim();
         String prioridade = (String) prioridadeBox.getSelectedItem();
 
-        // Validação
         if (titulo.isEmpty()) {
             JOptionPane.showMessageDialog(
                     view,
@@ -187,11 +208,9 @@ public class KanbanController {
             return;
         }
 
-        // Cria a tarefa e adiciona no model
         Tarefa novaTarefa = new Tarefa(titulo, descricao, prioridade);
         board.getColunas().get(colunaIndex).adicionarTarefa(novaTarefa);
 
-        // Atualiza a view
         view.atualizarColunas(board.getColunas());
     }
 }

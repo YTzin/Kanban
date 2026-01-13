@@ -41,6 +41,22 @@ public class KanbanView extends JFrame {
 
         return barra;
     }
+    // Ai edu, isso aqui pra mostrar com a prioridade mais alta em cima, OTIMA IDEIA
+    private int prioridadePeso(String prioridade) {
+        if (prioridade == null) return 0;
+
+            switch (prioridade.toLowerCase()) {
+                case "alta":
+                    return 3;
+                case "media":
+                    return 2;
+                case "baixa":
+                    return 1;
+                default:
+                    return 0;
+            }
+    }
+
 
     private JButton criarBotaoBarra(String texto, String card) {
         JButton botao = new JButton(texto);
@@ -136,9 +152,26 @@ public class KanbanView extends JFrame {
             conteudo.setBackground(new Color(245, 245, 245));
             conteudo.setBorder(BorderFactory.createEmptyBorder(8, 8, 8, 8));
 
-            coluna.getTarefas().forEach(tarefa ->
-                    conteudo.add(new PostItPanel(tarefa))
-            );
+            // Tem q mandar aqui pro controller pegar, dps dar uma olhada nisso, FAZER CONFIRMACAO VISUAL DPS, ESTA EXCLUINDO SEM PERGUNTAR
+            coluna.getTarefas().stream()
+                .sorted((t1, t2) ->
+                    prioridadePeso(t2.getPrioridade()) - prioridadePeso(t1.getPrioridade())
+                )
+                .forEach(tarefa -> {
+                    PostItPanel postIt = new PostItPanel(tarefa);
+
+                    postIt.addPropertyChangeListener("excluirTarefa", evt ->
+                        firePropertyChange("excluirTarefa", null, evt.getNewValue())
+                    );
+
+                    postIt.addPropertyChangeListener("moverTarefaProximo", evt ->
+                        firePropertyChange("moverTarefaProximo", null, evt.getNewValue())
+                    );
+
+                    conteudo.add(postIt);
+                });
+
+
 
             JScrollPane scroll = new JScrollPane(conteudo);
             scroll.setBorder(null);
@@ -199,5 +232,6 @@ public class KanbanView extends JFrame {
         painelColunas.repaint();
     }
 
-    //Removi cores por coluna e coloquei na model, pq guardar valores padrão é tarefa da MODEL, dps pesquisar se realmente é assim q o MVC trabalha ou se eu voltou pra VIEW.
+    //Removi cores por coluna e coloquei na model, pq guardar valores padrão é tarefa da MODEL, dps pesquisar se realmente é assim q o MVC trabalha ou se volta pra VIEW,.
+    // EDU E MILLER , +++++++++++++++++++++++++++++++++++++++++ CONFIRMAR ISSO ANTES DE ENVIAR +++++++++++++++++++++++++++++++++++++++++++++++++++++
 }
