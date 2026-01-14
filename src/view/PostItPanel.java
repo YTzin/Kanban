@@ -61,25 +61,59 @@ public class PostItPanel extends JPanel {
         JPanel infoPanel = new JPanel(new GridLayout(0, 1, 5, 5));
         infoPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
-        infoPanel.add(new JLabel("Titulo: " + tarefa.getTitulo()));
-        infoPanel.add(new JLabel("Descricao: " + tarefa.getDescricao()));
-        infoPanel.add(new JLabel("Prioridade: " + tarefa.getPrioridade()));
+        infoPanel.add(new JLabel("Titulo:"));
+        JTextField tituloField = new JTextField(tarefa.getTitulo());
+        infoPanel.add(tituloField);
+
+        infoPanel.add(new JLabel("Descricao:"));
+        JTextArea descricaoArea = new JTextArea(tarefa.getDescricao());
+        infoPanel.add(new JScrollPane(descricaoArea));
+
+        infoPanel.add(new JLabel("Prioridade:"));
+        JComboBox<String> prioridadeBox =
+                new JComboBox<>(new String[]{"Alta", "Media", "Baixa"});
+        prioridadeBox.setSelectedItem(tarefa.getPrioridade());
+        infoPanel.add(prioridadeBox);
+
         infoPanel.add(new JLabel("Data de Criacao: " + tarefa.getDataCriacao()));
 
         dialog.add(infoPanel, BorderLayout.CENTER);
 
         JPanel buttonPanel = new JPanel();
 
+        JButton salvar = new JButton("Salvar");
+        salvar.addActionListener(ev -> {
+            Object[] dados = new Object[]{
+                    tarefa,
+                    tituloField.getText(),
+                    descricaoArea.getText(),
+                    prioridadeBox.getSelectedItem()
+            };
+            firePropertyChange("editarTarefa", null, dados);
+            dialog.dispose();
+        });
+        buttonPanel.add(salvar);
+
         JButton fechar = new JButton("Fechar");
         fechar.addActionListener(ev -> dialog.dispose());
         buttonPanel.add(fechar);
 
-        JButton proximo = new JButton("Mandar para o proximo");
-        proximo.addActionListener(ev -> {
+        JButton esquerda = new JButton("<-");
+        esquerda.setFont(new Font("Segoe UI", Font.BOLD, 14));
+        esquerda.addActionListener(ev -> {
+            firePropertyChange("moverTarefaAnterior", null, tarefa);
+            dialog.dispose();
+        });
+
+        JButton direita = new JButton("->");
+        direita.setFont(new Font("Segoe UI", Font.BOLD, 14));
+        direita.addActionListener(ev -> {
             firePropertyChange("moverTarefaProximo", null, tarefa);
             dialog.dispose();
         });
-        buttonPanel.add(proximo);
+
+        buttonPanel.add(esquerda);
+        buttonPanel.add(direita);
 
         dialog.add(buttonPanel, BorderLayout.SOUTH);
 
@@ -87,6 +121,7 @@ public class PostItPanel extends JPanel {
         dialog.setLocationRelativeTo(this);
         dialog.setVisible(true);
     }
+
 
     @Override
     protected void paintComponent(Graphics g) {

@@ -168,7 +168,12 @@ public class KanbanView extends JFrame {
                         firePropertyChange("moverTarefaProximo", null, evt.getNewValue())
                     );
 
+                    postIt.addPropertyChangeListener("editarTarefa", evt ->
+                        firePropertyChange("editarTarefa", null, evt.getNewValue())
+                    );
+
                     conteudo.add(postIt);
+
                 });
 
 
@@ -233,5 +238,5 @@ public class KanbanView extends JFrame {
     }
 
     //Removi cores por coluna e coloquei na model, pq guardar valores padrão é tarefa da MODEL, dps pesquisar se realmente é assim q o MVC trabalha ou se volta pra VIEW,.
-    // EDU E MILLER , +++++++++++++++++++++++++++++++++++++++++ CONFIRMAR ISSO ANTES DE ENVIAR +++++++++++++++++++++++++++++++++++++++++++++++++++++
+    //+++++++++++++++++++++++++++++++++++++++++ CONFIRMAR ISSO ANTES DE ENVIAR +++++++++++++++++++++++++++++++++++++++++++++++++++++
 }

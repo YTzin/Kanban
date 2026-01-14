@@ -93,6 +93,21 @@ public class KanbanController {
             int colunaIndex = (int) evt.getNewValue(); 
             criarNovaTarefa(colunaIndex);
         });
+        view.addPropertyChangeListener("editarTarefa", evt -> {
+            Object[] dados = (Object[]) evt.getNewValue();
+
+            Tarefa tarefa = (Tarefa) dados[0];
+            String novoTitulo = (String) dados[1];
+            String novaDescricao = (String) dados[2];
+            String novaPrioridade = (String) dados[3];
+
+            tarefa.setTitulo(novoTitulo);
+            tarefa.setDescricao(novaDescricao);
+            tarefa.setPrioridade(novaPrioridade);
+
+            view.atualizarColunas(board.getColunas());
+        });
+
 
         inicializar();
     }
