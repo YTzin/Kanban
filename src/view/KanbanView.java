@@ -240,3 +240,6 @@ public class KanbanView extends JFrame {
     //Removi cores por coluna e coloquei na model, pq guardar valores padrão é tarefa da MODEL, dps pesquisar se realmente é assim q o MVC trabalha ou se volta pra VIEW,.
     //+++++++++++++++++++++++++++++++++++++++++ CONFIRMAR ISSO ANTES DE ENVIAR +++++++++++++++++++++++++++++++++++++++++++++++++++++
 }
+
+// Amanhã só falta fazer, o criador de novas telas e o os botões de PROXIMO e anterior.
+    // LEMBRAR DE CRIAR A EXCEPTION, SE N VAI DAR RUIM

@@ -82,16 +82,32 @@ public class PostItPanel extends JPanel {
         JPanel buttonPanel = new JPanel();
 
         JButton salvar = new JButton("Salvar");
+
+        // Verificacao para n deixar o titulo ser vazio, estava quebrando o codigo, lembrar de fazer para a criacao de novas paginas TBM
         salvar.addActionListener(ev -> {
+            String titulo = tituloField.getText().trim();
+
+            if (titulo.isEmpty()) {
+                JOptionPane.showMessageDialog(
+                        dialog,
+                        "O título eh obrigatorio!",
+                        "Erro",
+                        JOptionPane.ERROR_MESSAGE
+                );
+                return;
+            }
+
             Object[] dados = new Object[]{
                     tarefa,
-                    tituloField.getText(),
+                    titulo,
                     descricaoArea.getText(),
                     prioridadeBox.getSelectedItem()
             };
+
             firePropertyChange("editarTarefa", null, dados);
             dialog.dispose();
         });
+
         buttonPanel.add(salvar);
 
         JButton fechar = new JButton("Fechar");
