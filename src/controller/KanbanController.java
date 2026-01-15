@@ -82,6 +82,11 @@ public class KanbanController {
                 view.atualizarColunas(board.getColunas());
             }
         });
+        view.addPropertyChangeListener("moverTarefaProximo", evt -> {
+        Tarefa tarefa = (Tarefa) evt.getNewValue();
+        moverParaProximaColuna(tarefa);
+    });
+
 
         view.addPropertyChangeListener("editarColuna", evt -> {
             int colunaIndex = (int) evt.getNewValue();
@@ -176,6 +181,28 @@ public class KanbanController {
 
         view.atualizarColunas(board.getColunas());
     }
+    // Tentativa de mover para a proxima coluna
+    private void moverParaProximaColuna(Tarefa tarefa) {
+
+    for (int i = 0; i < board.getColunas().size(); i++) {
+        Coluna colunaAtual = board.getColunas().get(i);
+
+        if (colunaAtual.getTarefas().contains(tarefa)) {
+
+            // N deixa ir se n tiver proxima coluna
+            if (i == board.getColunas().size() - 1) {
+                return;
+            }
+
+            colunaAtual.getTarefas().remove(tarefa);
+            board.getColunas().get(i + 1).getTarefas().add(tarefa);
+            break;
+        }
+    }
+
+    view.atualizarColunas(board.getColunas());
+}
+
 
     private void criarNovaTarefa(int colunaIndex) {
 
