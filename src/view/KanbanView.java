@@ -37,7 +37,11 @@ public class KanbanView extends JFrame {
         barra.setPreferredSize(new Dimension(900, 48));
 
         barra.add(criarBotaoBarra("Kanban", "KANBAN"));
-        barra.add(criarBotaoBarra("Nova pagina", "OUTRA"));
+        //JButton novaPagina = new JButton("+ Nova página");
+        //novaPagina.addActionListener(e -> criarNovaPagina());
+        //barra.add(novaPagina);
+        // Dps de implementar isso, tem que descomentar as linhas, e fazer o botão ir para o lado direito quando criar um KANBAN viu miller.
+
 
         return barra;
     }
@@ -95,6 +99,28 @@ public class KanbanView extends JFrame {
         painel.add(new JLabel("Outra pagina (em construcao)"));
         return painel;
     }
+    /*public void criarNovaPagina() {
+        String nome = JOptionPane.showInputDialog(
+                this,
+                "Nome da nova página:"
+        );
+
+        if (nome == null || nome.trim().isEmpty()) {
+            return;
+        }
+
+        JPanel novaPagina = criarPaginaKanban();
+
+        painelCards.add(novaPagina, nome);
+        cardLayout.show(painelCards, nome);
+
+        JButton botao = criarBotaoBarra(nome, nome);
+        ((JPanel) getContentPane().getComponent(0)).add(botao);
+
+        revalidate();
+        repaint();
+    }*/ //Este metodo deve estar errado segundo o MVC, Corrigir isso, mas seria mais ou menos isso, tem q tirar esse IF, pois isso é função do CONTROLLER.
+
 
     public void atualizarColunas(List<Coluna> colunas) {
         painelColunas.removeAll();
