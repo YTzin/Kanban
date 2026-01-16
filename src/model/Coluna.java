@@ -10,30 +10,10 @@ public class Coluna {
     private ArrayList<Tarefa> tarefas;
     private Color cor;
 
-    public Coluna(String nome) {
-        this.nome = nome;
-        this.tarefas = new ArrayList<>();
-        this.cor = corPadrao(nome);
-    }
     public Coluna(String nome, Color cor) {
         this.nome = nome;
         this.tarefas = new ArrayList<>();
         this.cor = cor;
-    }
-
-    private Color corPadrao(String nome) {
-        if (nome == null) return Color.GRAY;
-
-        switch (nome.trim().toLowerCase()) {
-            case "a fazer":
-                return new Color(0, 0, 240);
-            case "em progresso":
-                return new Color(245, 158, 11);
-            case "concluído":
-                return new Color(34, 197, 94);
-            default:
-                return new Color(107, 114, 128);
-        }
     }
 
     public String getNome() {
