@@ -58,7 +58,8 @@ public class PostItPanel extends JPanel {
 
         dialog.setLayout(new BorderLayout());
 
-        JPanel infoPanel = new JPanel(new GridLayout(0, 1, 5, 5));
+        JPanel infoPanel = new JPanel();
+        infoPanel.setLayout(new BoxLayout(infoPanel, BoxLayout.Y_AXIS));
         infoPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
         infoPanel.add(new JLabel("Titulo:"));
