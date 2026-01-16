@@ -18,9 +18,9 @@ public class Tarefa {
         this.dataCriacao = LocalDateTime.now(); // define a data de criação como agora
     }
 
-    // Construtor só com título (compatível com seu código antigo)
+    // Construtor só com título 
     public Tarefa(String titulo) {
-        this(titulo, "essa tarefa bla bla", "Alta"); // descrição vazia e prioridade padrão
+        this(titulo, "essa tarefa", "Alta"); 
     }
 
     // Getters
