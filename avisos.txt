@@ -1,1 +1,0 @@
-Ohar o metodo  moverParaProximaColuna(Tarefa tarefa), para fazer o MoverParaColunaAnterior.
