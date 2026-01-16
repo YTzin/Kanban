@@ -1,10 +1,10 @@
 package model;
 
+
 import java.util.ArrayList;
-import java.util.List;
 
 public class KanbanBoard {
-    private List<Coluna> colunas;
+    private ArrayList<Coluna> colunas;
 
     public KanbanBoard() {
         colunas = new ArrayList<>();
@@ -14,7 +14,7 @@ public class KanbanBoard {
         colunas.add(coluna);
     }
 
-    public List<Coluna> getColunas() {
+    public ArrayList<Coluna> getColunas() {
         return colunas;
     }
     public void removerColuna(int index) {

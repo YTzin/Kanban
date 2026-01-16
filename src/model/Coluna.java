@@ -7,7 +7,7 @@ import java.awt.Color;
 public class Coluna {
 
     private String nome;
-    private List<Tarefa> tarefas;
+    private ArrayList<Tarefa> tarefas;
     private Color cor;
 
     public Coluna(String nome) {

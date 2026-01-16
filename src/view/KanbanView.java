@@ -2,7 +2,7 @@ package view;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.List;
+import java.util.*;
 import model.Coluna;
 
 public class KanbanView extends JFrame {
@@ -122,7 +122,7 @@ public class KanbanView extends JFrame {
     }*/ //Este metodo deve estar errado segundo o MVC, Corrigir isso, mas seria mais ou menos isso, tem q tirar esse IF, pois isso é função do CONTROLLER.
 
 
-    public void atualizarColunas(List<Coluna> colunas) {
+    public void atualizarColunas(ArrayList<Coluna> colunas) {
         painelColunas.removeAll();
 
         for (int i = 0; i < colunas.size(); i++) {
@@ -192,6 +192,9 @@ public class KanbanView extends JFrame {
 
                     postIt.addPropertyChangeListener("moverTarefaProximo", evt ->
                         firePropertyChange("moverTarefaProximo", null, evt.getNewValue())
+                    );
+                    postIt.addPropertyChangeListener("moverTarefaAnterior", evt ->
+                        firePropertyChange("moverTarefaAnterior", null, evt.getNewValue())
                     );
 
                     postIt.addPropertyChangeListener("editarTarefa", evt ->
