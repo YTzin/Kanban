@@ -108,7 +108,7 @@ public class KanbanController {
         // Add post-it, tem que resolver o problema de estar add em todas as colunas
         view.addPropertyChangeListener("adicionarPostIt", evt -> {
             int colunaIndex = (int) evt.getNewValue(); 
-            criarNovaTarefa(colunaIndex);
+            mostrarDialogoNovaTarefa(colunaIndex);
         });
         view.addPropertyChangeListener("editarTarefa", evt -> {
             Object[] dados = (Object[]) evt.getNewValue();
@@ -193,99 +193,45 @@ public class KanbanController {
 
         view.atualizarColunas(board.getColunas());
     }
-    // Tentativa de mover para a proxima coluna
     private void moverParaProximaColuna(Tarefa tarefa) {
-
-        for (int i = 0; i < board.getColunas().size(); i++) {
-            Coluna colunaAtual = board.getColunas().get(i);
-
-            if (colunaAtual.getTarefas().contains(tarefa)) {
-
-                if (i == board.getColunas().size() - 1) {
-                    return;
-                }
-
-                colunaAtual.getTarefas().remove(tarefa);
-                board.getColunas().get(i + 1).getTarefas().add(tarefa);
-                break;
-            }
-        }
-
+        board.moverParaProximaColuna(tarefa);
         view.atualizarColunas(board.getColunas());
-        }
-    private void moverParaColunaAnterior(Tarefa tarefa) {
-
-        for (int i = 0; i < board.getColunas().size(); i++) {
-            Coluna colunaAtual = board.getColunas().get(i);
-
-            if (colunaAtual.getTarefas().contains(tarefa)) {
-
-                // N deixa ir se n tiver coluna anterior
-                if (i == 0){
-                    return;
-                }
-
-                colunaAtual.getTarefas().remove(tarefa);
-                board.getColunas().get(i - 1).getTarefas().add(tarefa);
-
-                view.atualizarColunas(board.getColunas());
-                return;
-            }
-        }
-
-        // view.atualizarColunas(board.getColunas());
     }
 
+    private void moverParaColunaAnterior(Tarefa tarefa) {
+        board.moverParaColunaAnterior(tarefa);
+        view.atualizarColunas(board.getColunas());
+    }
 
-    private void criarNovaTarefa(int colunaIndex) {
-
+    private void mostrarDialogoNovaTarefa(int colunaIndex) {
         JPanel panel = new JPanel(new GridLayout(0, 1, 6, 6));
-
         JTextField tituloField = new JTextField();
         JTextField descricaoField = new JTextField();
-
         String[] prioridades = {"Alta", "Media", "Baixa"};
         JComboBox<String> prioridadeBox = new JComboBox<>(prioridades);
 
         panel.add(new JLabel("Titulo:"));
         panel.add(tituloField);
-
         panel.add(new JLabel("Descricao:"));
         panel.add(descricaoField);
-
         panel.add(new JLabel("Prioridade:"));
         panel.add(prioridadeBox);
 
-        int resultado = JOptionPane.showConfirmDialog(
-                view,
-                panel,
-                "Nova Tarefa",
-                JOptionPane.OK_CANCEL_OPTION,
-                JOptionPane.PLAIN_MESSAGE
-        );
+        int resultado = JOptionPane.showConfirmDialog(view, panel, "Nova Tarefa", JOptionPane.OK_CANCEL_OPTION);
 
-        // Se clicar em Cancelar ou no X, não faz nada
-        if (resultado != JOptionPane.OK_OPTION) {
-            return;
+        if (resultado == JOptionPane.OK_OPTION) {
+            String titulo = tituloField.getText().trim();
+            String descricao = descricaoField.getText().trim();
+            String prioridade = (String) prioridadeBox.getSelectedItem();
+
+            if (titulo.isEmpty()) {
+                JOptionPane.showMessageDialog(view, "O titulo eh obrigatorio!");
+                return;
+            }
+
+            board.criarNovaTarefa(colunaIndex, titulo, descricao, prioridade);
+            view.atualizarColunas(board.getColunas());
         }
-
-        String titulo = tituloField.getText().trim();
-        String descricao = descricaoField.getText().trim();
-        String prioridade = (String) prioridadeBox.getSelectedItem();
-
-        if (titulo.isEmpty()) {
-            JOptionPane.showMessageDialog(
-                    view,
-                    "O título eh obrigatorio!",
-                    "Erro",
-                    JOptionPane.ERROR_MESSAGE
-            );
-            return;
-        }
-
-        Tarefa novaTarefa = new Tarefa(titulo, descricao, prioridade);
-        board.getColunas().get(colunaIndex).adicionarTarefa(novaTarefa);
-
-        view.atualizarColunas(board.getColunas());
     }
+   
 }
