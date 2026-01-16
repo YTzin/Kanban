@@ -67,6 +67,8 @@ public class PostItPanel extends JPanel {
 
         infoPanel.add(new JLabel("Descricao:"));
         JTextArea descricaoArea = new JTextArea(tarefa.getDescricao());
+        descricaoArea.setLineWrap(true);
+        descricaoArea.setWrapStyleWord(true);
         infoPanel.add(new JScrollPane(descricaoArea));
 
         infoPanel.add(new JLabel("Prioridade:"));
