@@ -12,6 +12,7 @@ public class KanbanController {
 
     private KanbanBoard board;
     private KanbanView view;
+    private KanbanBoard model;
 
     public KanbanController(KanbanBoard board, KanbanView view) {
         this.board = board;
@@ -39,6 +40,16 @@ public class KanbanController {
             }
 
             view.atualizarColunas(board.getColunas());
+        });
+        view.addPropertyChangeListener("adicionarTarefa", evt -> {
+            Object[] dados = (Object[]) evt.getNewValue();
+            Coluna coluna = (Coluna) dados[0];
+            String texto = (String) dados[1];
+
+            Tarefa tarefa = new Tarefa(texto);
+            coluna.adicionarTarefa(tarefa);
+
+            view.atualizarColunas(model.getColunas());
         });
 
         // Adicionar coluna

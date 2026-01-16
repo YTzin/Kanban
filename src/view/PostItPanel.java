@@ -83,7 +83,7 @@ public class PostItPanel extends JPanel {
 
         JButton salvar = new JButton("Salvar");
 
-        // Verificacao para n deixar o titulo ser vazio, estava quebrando o codigo, lembrar de fazer para a criacao de novas paginas TBM
+        // Verificacao para n deixar o titulo ser vazio, estava quebrando o codigo,
         salvar.addActionListener(ev -> {
             String titulo = tituloField.getText().trim();
 
@@ -138,8 +138,6 @@ public class PostItPanel extends JPanel {
         dialog.setVisible(true);
     }
 
-
-    @Override
     protected void paintComponent(Graphics g) {
         Graphics2D g2 = (Graphics2D) g.create();
 

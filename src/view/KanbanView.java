@@ -24,7 +24,7 @@ public class KanbanView extends JFrame {
         painelCards = new JPanel(cardLayout);
 
         painelCards.add(criarPaginaKanban(), "KANBAN");
-        painelCards.add(criarPaginaOutra(), "OUTRA");
+        // painelCards.add(criarPaginaOutra(), "OUTRA");
 
         add(painelCards, BorderLayout.CENTER);
 
@@ -94,12 +94,12 @@ public class KanbanView extends JFrame {
         return painelColunas;
     }
 
-    private JPanel criarPaginaOutra() {
+    /*private JPanel criarPaginaOutra() {
         JPanel painel = new JPanel();
         painel.add(new JLabel("Outra pagina (em construcao)"));
         return painel;
     }
-    /*public void criarNovaPagina() {
+    public void criarNovaPagina() {
         String nome = JOptionPane.showInputDialog(
                 this,
                 "Nome da nova página:"
@@ -264,9 +264,11 @@ public class KanbanView extends JFrame {
 
         painelColunas.revalidate();
         painelColunas.repaint();
-        
     }
-    
 
+    //Removi cores por coluna e coloquei na model, pq guardar valores padrão é tarefa da MODEL, dps pesquisar se realmente é assim q o MVC trabalha ou se volta pra VIEW,.
+    //+++++++++++++++++++++++++++++++++++++++++ CONFIRMAR ISSO ANTES DE ENVIAR +++++++++++++++++++++++++++++++++++++++++++++++++++++
 }
 
+// Amanhã só falta fazer, o criador de novas telas e o os botões de PROXIMO e anterior.
+    // LEMBRAR DE CRIAR A EXCEPTION, SE N VAI DAR RUIM

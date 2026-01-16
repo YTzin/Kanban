@@ -17,7 +17,6 @@ public class AdicionarColunaPanel extends JPanel {
         label.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 
         label.addMouseListener(new java.awt.event.MouseAdapter() {
-            @Override
             public void mouseClicked(java.awt.event.MouseEvent e) {
                 onClick.run();
             }

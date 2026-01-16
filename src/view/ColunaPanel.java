@@ -13,15 +13,12 @@ public class ColunaPanel extends JPanel {
         setLayout(new BorderLayout());
         setPreferredSize(new Dimension(260, 400));
         setMaximumSize(new Dimension(260, Integer.MAX_VALUE));
-        setBackground(new Color(240, 0, 0));
+        setBackground(Color.WHITE);
         setOpaque(true);
-        
 
-        // ===== HEADER =====
         JPanel header = criarHeader(coluna.getNome());
         add(header, BorderLayout.NORTH);
 
-        // ===== CONTEÚDO =====
         conteudo = new JPanel();
         conteudo.setLayout(new BoxLayout(conteudo, BoxLayout.Y_AXIS));
         conteudo.setBackground(new Color(245, 245, 245));
@@ -40,7 +37,6 @@ public class ColunaPanel extends JPanel {
         scroll.getViewport().setOpaque(true);
         add(scroll, BorderLayout.CENTER);
 
-        // ===== BOTÃO =====
         JButton btnAddPostIt = new JButton("+ Adicionar Post-it");
         btnAddPostIt.setFocusPainted(false);
         btnAddPostIt.setBackground(Color.WHITE);
@@ -51,20 +47,15 @@ public class ColunaPanel extends JPanel {
 
         btnAddPostIt.addActionListener(e -> {
             String texto = JOptionPane.showInputDialog(this, "Digite o texto do Post-it:");
-            if (texto != null && !texto.trim().isEmpty()) {
-                Tarefa novaTarefa = new Tarefa(texto);
-                coluna.adicionarTarefa(novaTarefa);
-                conteudo.add(new PostItPanel(novaTarefa));
-                conteudo.add(Box.createVerticalStrut(8));
-                conteudo.revalidate();
-                conteudo.repaint();
+            if (texto == null || texto.trim().isEmpty()) {
+                return;
             }
+            firePropertyChange("adicionarTarefa", null, new Object[]{ coluna, texto });
         });
 
         add(btnAddPostIt, BorderLayout.SOUTH);
     }
 
-    // ===== HEADER =====
     private JPanel criarHeader(String titulo) {
         JPanel header = new JPanel(new BorderLayout());
         header.setOpaque(true);
@@ -77,23 +68,25 @@ public class ColunaPanel extends JPanel {
         label.setForeground(Color.WHITE);
         label.setFont(new Font("Segoe UI", Font.BOLD, 14));
         label.setBorder(BorderFactory.createEmptyBorder(0, 12, 0, 0));
-        header.add(label, BorderLayout.WEST);
 
+        header.add(label, BorderLayout.WEST);
         return header;
     }
 
     private Color corPorColuna(String titulo) {
+        if (titulo == null) return Color.DARK_GRAY;
+
         String t = titulo.toLowerCase().trim()
                 .replace("í", "i")
                 .replace("ú", "u");
 
         switch (t) {
             case "a fazer":
-                return new Color(59, 130, 246);   // azul
+                return new Color(59, 130, 246);
             case "em progresso":
-                return new Color(245, 158, 11);   // laranja
+                return new Color(245, 158, 11);
             case "concluido":
-                return new Color(34, 197, 94);    // verde
+                return new Color(34, 197, 94);
             default:
                 return Color.DARK_GRAY;
         }
