@@ -4,6 +4,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.util.*;
 import model.Coluna;
+import model.Tarefa;
 
 public class KanbanView extends JFrame {
 
@@ -45,8 +46,8 @@ public class KanbanView extends JFrame {
 
         return barra;
     }
-    // Ai edu, isso aqui pra mostrar com a prioridade mais alta em cima, OTIMA IDEIA
-    private int prioridadePeso(String prioridade) {
+    // Ai edu, isso aqui pra mostrar com a prioridade mais alta em cima.
+   /*  private int prioridadePeso(String prioridade) {
         if (prioridade == null) return 0;
 
             switch (prioridade.toLowerCase()) {
@@ -60,7 +61,7 @@ public class KanbanView extends JFrame {
                     return 0;
             }
     }
-
+*/
 
     private JButton criarBotaoBarra(String texto, String card) {
         JButton botao = new JButton(texto);
@@ -181,7 +182,7 @@ public class KanbanView extends JFrame {
             // Tem q mandar aqui pro controller pegar, dps dar uma olhada nisso, FAZER CONFIRMACAO VISUAL DPS, ESTA EXCLUINDO SEM PERGUNTAR
             coluna.getTarefas().stream()
                 .sorted((t1, t2) ->
-                    prioridadePeso(t2.getPrioridade()) - prioridadePeso(t1.getPrioridade())
+                    Tarefa.prioridadePeso(t2.getPrioridade()) - Tarefa.prioridadePeso(t1.getPrioridade())
                 )
                 .forEach(tarefa -> {
                     PostItPanel postIt = new PostItPanel(tarefa);

@@ -21,7 +21,10 @@ public class Coluna {
     }
 
     public void setNome(String nome) {
-        this.nome = nome;
+        if(nome != null){
+            this.nome = nome;
+        }
+        
     }
 
     public List<Tarefa> getTarefas() {
@@ -30,6 +33,9 @@ public class Coluna {
 
     public void adicionarTarefa(Tarefa tarefa) {
         tarefas.add(tarefa);
+    }
+    public void removerTarefa(Tarefa tarefa){
+        tarefas.remove(tarefa);
     }
 
     public Color getCor() {

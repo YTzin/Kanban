@@ -12,7 +12,7 @@ public class KanbanController {
 
     private KanbanBoard board;
     private KanbanView view;
-    private KanbanBoard model;
+    
 
     public KanbanController(KanbanBoard board, KanbanView view) {
         this.board = board;
@@ -34,9 +34,7 @@ public class KanbanController {
             }
 
             for (Coluna coluna : board.getColunas()) {
-                if (coluna.getTarefas().remove(tarefa)) {
-                    break;
-                }
+                coluna.removerTarefa(tarefa);
             }
 
             view.atualizarColunas(board.getColunas());
@@ -49,7 +47,7 @@ public class KanbanController {
             Tarefa tarefa = new Tarefa(texto);
             coluna.adicionarTarefa(tarefa);
 
-            view.atualizarColunas(model.getColunas());
+            view.atualizarColunas(board.getColunas());
         });
 
         // Adicionar coluna
@@ -198,23 +196,23 @@ public class KanbanController {
     // Tentativa de mover para a proxima coluna
     private void moverParaProximaColuna(Tarefa tarefa) {
 
-    for (int i = 0; i < board.getColunas().size(); i++) {
-        Coluna colunaAtual = board.getColunas().get(i);
+        for (int i = 0; i < board.getColunas().size(); i++) {
+            Coluna colunaAtual = board.getColunas().get(i);
 
-        if (colunaAtual.getTarefas().contains(tarefa)) {
+            if (colunaAtual.getTarefas().contains(tarefa)) {
 
-            if (i == board.getColunas().size() - 1) {
-                return;
+                if (i == board.getColunas().size() - 1) {
+                    return;
+                }
+
+                colunaAtual.getTarefas().remove(tarefa);
+                board.getColunas().get(i + 1).getTarefas().add(tarefa);
+                break;
             }
-
-            colunaAtual.getTarefas().remove(tarefa);
-            board.getColunas().get(i + 1).getTarefas().add(tarefa);
-            break;
         }
-    }
 
-    view.atualizarColunas(board.getColunas());
-    }
+        view.atualizarColunas(board.getColunas());
+        }
     private void moverParaColunaAnterior(Tarefa tarefa) {
 
         for (int i = 0; i < board.getColunas().size(); i++) {

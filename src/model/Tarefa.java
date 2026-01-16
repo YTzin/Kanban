@@ -58,11 +58,9 @@ public class Tarefa {
         this.dataCriacao = dataCriacao;
     }
 
-    public int getPesoPrioridade(){
-        if(prioridade == null){
-            return 0;
-        }
-        switch(prioridade.toLowerCase()){
+    public static int prioridadePeso(String prioridade) {
+        if (prioridade == null) return 0;
+        switch (prioridade.toLowerCase()) {
             case "alta": return 3;
             case "media": return 2;
             case "baixa": return 1;
